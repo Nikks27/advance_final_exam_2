@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -8,8 +7,8 @@ class DatabaseHelper {
   static DatabaseHelper databaseHelper = DatabaseHelper._();
 
   Database? _database;
-  String databaseName = 'expense.db';
-  String tableName = 'expense';
+  String databaseName = 'attendance.db';
+  String tableName = 'attendance';
 
   Future<Database> get database async => _database ?? await initDatabase();
 
@@ -23,9 +22,9 @@ class DatabaseHelper {
         String sql = '''
         CREATE TABLE $tableName (
           id INTEGER NOT NULL,
-          title TEXT NOT NULL,
-          athor TEXT NOT NULL,
-          status TEXT NOT NULL
+          name TEXT NOT NULL,
+          date TEXT NOT NULL,
+          present INTEGER NOT NULL
         )
         ''';
         db.execute(sql);
@@ -33,7 +32,7 @@ class DatabaseHelper {
     );
   }
 
-  Future<bool> JoinFireStore(int id) async {
+  Future<bool> firestoreExist(int id) async {
     final db = await database;
     String sql = '''
     SELECT * FROM $tableName WHERE id = ?
@@ -42,19 +41,19 @@ class DatabaseHelper {
     return result.isNotEmpty;
   }
 
-  Future<int> addBookDatabase(
-      int id, String title,  String athor, String status) async {
+  Future<int> addAttendanceDatabase(
+      int id, String name, String date, String present) async {
     final db = await database;
     String sql = '''
     INSERT INTO $tableName(
-    id, title, athor, status
+    id, name, date, present
     ) VALUES (?, ?, ?, ?, ?)
     ''';
-    List args = [id, title, athor,status];
+    List args = [id, name, date, present];
     return await db.rawInsert(sql, args);
   }
 
-  Future<List<Map<String, Object?>>> readAllBook() async {
+  Future<List<Map<String, Object?>>> readAllAttendance() async {
     final db = await database;
     String sql = '''
     SELECT * FROM $tableName
@@ -62,24 +61,17 @@ class DatabaseHelper {
     return await db.rawQuery(sql);
   }
 
-  Future<List<Map<String, Object?>>> getBookstatus(String status) async {
+  Future<int> updateAttendance(int id, String name, String date,
+      String present) async {
     final db = await database;
     String sql = '''
-    SELECT * FROM $tableName WHERE status LIKE '%$status%'
+    UPDATE $tableName SET name = ?, date = ?, present = ? WHERE id = ?
     ''';
-    return await db.rawQuery(sql);
-  }
-
-  Future<int> updateBook(int id, String title, String athor,String status) async {
-    final db = await database;
-    String sql = '''
-    UPDATE $tableName SET title = ?, amount = ?, date = ?, status = ? WHERE id = ?
-    ''';
-    List args = [title, athor, status, id];
+    List args = [name, date, present, id];
     return await db.rawUpdate(sql, args);
   }
 
-  Future<int> deleteBook(int id) async {
+  Future<int> deleteAttendance(int id) async {
     final db = await database;
     String sql = '''
     DELETE FROM $tableName WHERE id = ?
