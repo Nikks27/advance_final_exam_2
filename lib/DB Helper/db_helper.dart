@@ -1,38 +1,43 @@
+
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-class DatabaseHelper {
-  DatabaseHelper._();
-
-  static DatabaseHelper databaseHelper = DatabaseHelper._();
+class BookHelper
+{
+  BookHelper._();
+  static BookHelper helper = BookHelper._();
 
   Database? _database;
-  String databaseName = 'attendance.db';
-  String tableName = 'attendance';
+  String databaseName = 'books.db';
+  String tableName = 'books';
 
   Future<Database> get database async => _database ?? await initDatabase();
 
-  Future<Database> initDatabase() async {
-    final path = await getDatabasesPath();
-    final dbPath = join(path, databaseName);
-    return await openDatabase(
-      dbPath,
-      version: 1,
-      onCreate: (db, version) {
-        String sql = '''
+  Future<Database> initDatabase()
+  async {
+    {
+      final path = await getDatabasesPath();
+      final dbPath = join(path, databaseName);
+      return await openDatabase(
+        dbPath,
+        version: 1,
+        onCreate: (db, version) {
+          String sql = '''
         CREATE TABLE $tableName (
           id INTEGER NOT NULL,
-          name TEXT NOT NULL,
-          date TEXT NOT NULL,
-          present INTEGER NOT NULL
+          title TEXT NOT NULL,
+          author TEXT NOT NULL,
+          Status TEXT NOT NULL,
+          rating TEXT NOT NULL
         )
         ''';
-        db.execute(sql);
-      },
-    );
+          db.execute(sql);
+        },
+      );
+    }
   }
 
-  Future<bool> firestoreExist(int id) async {
+  Future<bool> DataExist(int id) async {
     final db = await database;
     String sql = '''
     SELECT * FROM $tableName WHERE id = ?
@@ -41,19 +46,20 @@ class DatabaseHelper {
     return result.isNotEmpty;
   }
 
-  Future<int> addAttendanceDatabase(
-      int id, String name, String date, String present) async {
+  Future<int> insertData({required int id,required String title,required String author,required String status, required String rating})
+  async {
     final db = await database;
     String sql = '''
-    INSERT INTO $tableName(
-    id, name, date, present
+     INSERT INTO $tableName(
+    id, title, author, status,rating
     ) VALUES (?, ?, ?, ?, ?)
     ''';
-    List args = [id, name, date, present];
+    List args = [id, title, author, status,rating];
     return await db.rawInsert(sql, args);
   }
 
-  Future<List<Map<String, Object?>>> readAllAttendance() async {
+  Future<List<Map<String, Object?>>> readAllData()
+  async {
     final db = await database;
     String sql = '''
     SELECT * FROM $tableName
@@ -61,22 +67,31 @@ class DatabaseHelper {
     return await db.rawQuery(sql);
   }
 
-  Future<int> updateAttendance(int id, String name, String date,
-      String present) async {
+  Future<List<Map<String, Object?>>> getSearchByCategory(String author) async {
     final db = await database;
     String sql = '''
-    UPDATE $tableName SET name = ?, date = ?, present = ? WHERE id = ?
+    SELECT * FROM $tableName WHERE author LIKE '%$author%'
     ''';
-    List args = [name, date, present, id];
+    return await db.rawQuery(sql);
+  }
+
+  Future<int> updateData(int id, String title, String author,
+      String status,String rating) async {
+    final db = await database;
+    String sql = '''
+    UPDATE $tableName SET title = ?, author = ?, status = ?, rating = ? WHERE id = ?
+    ''';
+    List args = [title, author, status, rating ,id];
     return await db.rawUpdate(sql, args);
   }
 
-  Future<int> deleteAttendance(int id) async {
+  Future<int> deleteData(int id) async {
     final db = await database;
     String sql = '''
-    DELETE FROM $tableName WHERE id = ?
-    ''';
+  DELETE FROM $tableName WHERE id = ?
+  ''';
     List args = [id];
     return await db.rawDelete(sql, args);
   }
+
 }

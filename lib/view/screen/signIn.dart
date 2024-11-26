@@ -1,8 +1,11 @@
-
+import 'package:advance_final_exam_2/provider/Attendance_provider.dart';
+import 'package:advance_final_exam_2/view/screen/component.dart';
+import 'package:advance_final_exam_2/view/screen/signUp.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../Service/auth_service.dart';
+
 
 class SignIn extends StatefulWidget {
   const SignIn({super.key});
@@ -14,12 +17,11 @@ class SignIn extends StatefulWidget {
 class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
-    // var providerTrue = Provider.of<BookProvider>(context);
-    // var providerFalse = Provider.of<BookProvider>(context, listen: false);
+    var providerTrue = Provider.of<BookProvider>(context);
+    var providerFalse = Provider.of<BookProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
-        title: Text('SignIn'),
+        title: Text('SignIn',style: TextStyle(fontWeight: FontWeight.w500,fontSize: 26),),
       ),
       body: Center(
         child: Padding(
@@ -27,32 +29,16 @@ class _SignInState extends State<SignIn> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-             TextField(
-               decoration: InputDecoration(
-                 hintText: "enter your email",
-                 border: OutlineInputBorder(
-                   borderRadius: BorderRadius.circular(15),
-                 )
-               ),
-             ),
-              SizedBox(height: 10,),
-              TextField(
-                decoration: InputDecoration(
-                  hintText: "enter your name",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                ),
-              ),
+              MyTextField(name: 'Email', controller: providerTrue.txtEmail),
+              SizedBox(height: 20,),
+              MyTextField(name: 'Password', controller: providerTrue.txtPass),
               SizedBox(height: 20,),
               TextButton(onPressed: () {
-                Navigator.of(context).pushNamed("/signup");
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => SignUp(),));
               }, child: Text("you don't have account ? SignUp"),),
               SizedBox(height: 20,),
               GestureDetector(
-                onTap: () {
-                  AuthService.authService.signInWithGoogle();
-                  Navigator.of(context).pushNamed('/home');
+                onTap: ()  {
                 },
                 child: Container(
                   height: 50,
@@ -64,6 +50,23 @@ class _SignInState extends State<SignIn> {
                   ),
                 ),
               ),
+              SizedBox(height: 20,),
+              GestureDetector(
+                onTap: () async {
+                  await AuthService.authService.signInAccountWithEmailAndPassword(providerTrue.txtEmail.text, providerTrue.txtPass.text);
+                  Navigator.of(context).pushNamed('/home');
+                },
+                child: Container(
+                  height: 50,
+                  width: 100,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(22),
+                    color: Colors.black,
+                  ),
+                  alignment: Alignment.center,
+                  child: Text('SignIn',style: TextStyle(color: Colors.white),),
+                ),
+              )
             ],
           ),
         ),

@@ -1,9 +1,10 @@
+import 'package:advance_final_exam_2/provider/Attendance_provider.dart';
 import 'package:advance_final_exam_2/view/screen/home_page.dart';
 import 'package:advance_final_exam_2/view/screen/signIn.dart';
 import 'package:advance_final_exam_2/view/screen/signUp.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-
+import 'package:provider/provider.dart';
 
 
 import 'firebase_options.dart';
@@ -14,7 +15,8 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(const MyApp());
+  runApp(ChangeNotifierProvider(
+      create: (context) =>BookProvider(), builder: (context, child) => const MyApp()));
 }
 
 class MyApp extends StatefulWidget {
@@ -30,9 +32,9 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       routes: {
-        '/' : (context) => SignIn(),
-        '/signup' : (context) => Signup(),
-        '/home' : (context) => HomePage(),
+        '/': (context) => SignIn(),
+        // '/signup': (context) => Signup(),
+        '/home': (context) => HomePage(),
         // '/home' : (context) => HomePage(),
       },
     );

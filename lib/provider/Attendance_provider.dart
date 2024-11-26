@@ -2,55 +2,93 @@
 import 'package:flutter/widgets.dart';
 
 import '../DB Helper/db_helper.dart';
+import '../Service/book_services.dart';
+import '../modal/modal.dart';
 
-class AttendanceProvider extends ChangeNotifier {
+class BookProvider extends ChangeNotifier {
 
-  var txtname = TextEditingController();
-  var txtdate = TextEditingController();
-  var txtpresent = TextEditingController();
-  List AttendenceList = [];
+  var txtTitle = TextEditingController();
+  var txtAuthor = TextEditingController();
+  var txtStatus = TextEditingController();
+  var txtEmail = TextEditingController();
+  var txtPass = TextEditingController();
+  var txtRating = TextEditingController();
+  List bookList = [];
   int id = 0;
 
   void initDatabase() {
-    DatabaseHelper.databaseHelper.initDatabase();
+    BookHelper.helper.initDatabase();
   }
 
-  void insertDatabase(
+  Future<void> insertDatabase(
       {required int id,
-        required String name,
-        required String date,
-        required String present}) {
-    DatabaseHelper.databaseHelper.addAttendanceDatabase(id, name, date, present);
-    // DatabaseHelper.databaseHelper.addAttendanceDatabase(id: id, name: name, author: date, status: present);
+        required String title,
+        required String author,
+        required String status,
+        required String rating,
+      }) async {
+    await BookHelper.helper.insertData(id: id, title: title, author: author, status: status, rating: rating);
   }
 
+  Future<void> cloudToLocally() async {
+    final details =
+    await BookServices.services.readDataFromStore().first;
+    final bookDetails = details.docs.map(
+          (e) {
+        final data = e.data();
+        return BookModal(id: id, title: data['title'], author: data['author'], status: data['status'], rating : data['rating']);
+      },
+    ).toList();
 
+    for (var book in bookDetails) {
+      final sync = await BookHelper.helper.DataExist(id);
+      if (sync) {
+        await updateData(id: book.id,title: book.title,status: book.status,author: book.author, rating: book.rating);
+      } else {
+        await insertDatabase(id: book.id,title: book.title,status: book.status,author: book.author, rating: book.rating);
+      }
+    }
+  }
   Future<void> updateData(
       {required int id,
-        required String name ,
-        required String date,
-        required String present}) async {
-    await DatabaseHelper.databaseHelper.updateAttendance(id, name, date, present);
+        required String title,
+        required String author,
+        required String status,
+        required String rating
+      }) async {
+    await BookHelper.helper.updateData(id, title, author, status,rating);
   }
 
   Future<void> deleteData({required int id}) async {
-    await DatabaseHelper.databaseHelper.deleteAttendance(id);
+    await BookHelper.helper.deleteData(id);
   }
 
   Future<List> readData() async {
-    AttendenceList = await DatabaseHelper.databaseHelper.readAllAttendance();
+    bookList = await BookHelper.helper.readAllData();
     notifyListeners();
-    return AttendenceList;
+    return bookList;
+  }
+
+  Future<void> booksAddInStore(
+      {required int id,
+        required String title,
+        required String author,
+        required String status,
+        required String rating
+      }) async {
+    await BookServices.services.addDataInStore(
+        id: id, title: title, author: author, status: status, rating: rating);
   }
 
   void clearAll() {
-    txtname.clear();
-    txtdate.clear();
-    txtpresent.clear();
+    txtTitle.clear();
+    txtAuthor.clear();
+    txtStatus.clear();
+    txtRating.clear();
     notifyListeners();
   }
 
-  AttendanceProvider()
+  BookProvider()
   {
     initDatabase();
   }
