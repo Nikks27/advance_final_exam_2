@@ -20,14 +20,16 @@ This ensures seamless syncing and offline functionality for a better user exper
 
   <img src = "https://github.com/user-attachments/assets/debf6a43-1e31-4013-8fd6-5e93d3a83f29" height ="550">
    <img src = "https://github.com/user-attachments/assets/431a8534-ddce-4918-a2a3-629c84330b66" height ="550">
-    <img src = "https://github.com/user-attachments/assets/96aebf95-fe86-4d29-8572-bb8c6226f5d8" height ="550">
-    <img src = "https://github.com/user-attachments/assets/3438b58b-4ec7-4c60-ae03-43ee968b5481" height ="550">
-     <img src = "https://github.com/user-attachments/assets/f12c669c-89c9-4a4e-842a-01e38c9e1195" height ="550">
+    <img src = "https://github.com/user-attachments/assets/0add894c-be8f-4d9b-8744-3c7abd5eedf4" height ="550">
+    <img src = "https://github.com/user-attachments/assets/e994309d-4da7-41e6-ab2e-ed738565ccbe" height ="550">
+     <img src = "https://github.com/user-attachments/assets/93a8bf86-276d-4e00-ae86-ce6023eb5970" height ="550">
+
+
+
 
 
 <h1 align="center"> 1.Final Exam video link</h1>
-
-https://drive.google.com/file/d/1A3dYoFoaNDNOYhuexyL4SCkYJT-2Po7T/view?usp=sharing
+https://drive.google.com/file/d/1cd7pgoN6C6rmIz1iqWtwxuG0QAjNNlJp/view?usp=sharing
 
 
 
