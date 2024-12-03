@@ -18,6 +18,7 @@ class BookServices {
     required String author,
     required String status,
     required String rating,
+    required String genre,
   }) async {
     await _firestore
         .collection("users")
@@ -29,6 +30,7 @@ class BookServices {
       'title': title,
       'author': author,
       'status': status,
+      'genre' : genre,
       'rating': rating,
     });
   }
